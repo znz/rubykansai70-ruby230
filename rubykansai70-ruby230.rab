@@ -15,14 +15,136 @@
 # : theme
 #    default
 
-= 最初のスライド
+= 自己紹介
 
-  * 項目1
-  * 項目2
-  * 項目3
-
-= 二番目のスライド
+  * twitter や github では @znz
 
   # image
-  # src = https://raw.github.com/rabbit-shocker/rabbit/master/sample/lavie.png
+  # src = https://secure.gravatar.com/avatar/8e497efbe99e2fa051316337d03624d9?s=200
   # relative_height = 100
+
+= Ruby 関連
+
+  * Ruby (CRuby) のコミッター
+  * Ruby 関係でいろいろ
+    * るびま (Rubyist Magazine) とか
+      * http://magazine.rubyist.net/
+    * るりま (Ruby リファレンスマニュアル) とか
+      * http://docs.ruby-lang.org/ja/
+    * Ruby 関連のイベントでの発表
+
+= Ruby 2.3.0
+
+  * 2015-12-25 リリース
+  * 2.3 系列最初のリリース
+
+= Frozen String Literal プラグマ (1)
+
+  * Ruby 2.1 から (({"str".freeze})) が最適化
+  * (({freeze})) 追加の pull request が社会問題化
+  * 新しいマジックコメントとコマンドラインオプション追加
+
+= Frozen String Literal プラグマ (2)
+
+  * 結果: 新しいマジックコメント追加の pull request 増加か(?)
+  * 要経過観察
+
+= Frozen String Literal プラグマ (3)
+
+    #!/usr/bin/env ruby
+    # -*- coding: utf-8 -*-
+    # frozen_string_literal: true
+    p "".frozen? # => true
+
+shebang や coding マジックコメントがあれば、その後
+
+= Frozen String Literal プラグマ (4)
+
+(({_})) でも (({-})) でも良い
+
+    # frozen_string_literal: true
+   # frozen-string-literal: true
+
+= Frozen String Literal プラグマ (5)
+
+大文字でも良い
+
+    # FROZEN-STRING-LITERAL: true
+
+しかし typo していると効かないのでしっかり動作確認しましょう
+
+= Frozen String Literal プラグマ (6)
+
+コマンドラインオプションでデフォルトの挙動変更
+
+    ruby --enable=frozen-string-literal foo.rb
+
+= Frozen String Literal プラグマ (7)
+
+影響を受けなくする (今までの挙動にする) には
+
+    # frozen_string_literal: false
+
+標準添付ライブラリには追加済み
+
+= Frozen String Literal プラグマ (8)
+
+    # frozen-string-literal: true
+    "str" << "ing"
+    # ~> foo.rb:2:in `<main>': can't modify frozen String (RuntimeError)
+
+= Frozen String Literal プラグマ (9)
+
+    # frozen-string-literal: true
+    "str" << "ing"
+    # ~> foo.rb:2:in `<main>': can't modify frozen String,
+         created at foo.rb:2 (RuntimeError)
+
+((%ruby --debug=frozen-string-literal foo.rb%)) で実行すると文字列の生成場所がわかる (((%ruby -d foo.rb%)) でも同様)
+
+= safe navigation operator (1)
+
+  * セーフナビゲーション演算子
+  * 日本語の定訳は (まだ) ない
+  * ((<lonely operator (ぼっち演算子)|URL:https://www.instagram.com/p/-M9l6mRPLR/>)) とも呼ばれている
+
+= safe navigation operator (2)
+
+  * C#, Groovy, Swift などの (({?.})) に似た機能
+  * Active Support の (({try!})) に相当
+
+= safe navigation operator (3)
+
+    obj&.foo
+
+(({obj && obj.foo})) 相当
+
+= safe navigation operator (4)
+
+    obj.try!(:foo, bar())
+
+(({bar()})) が常に呼ばれる
+
+    obj&.foo(bar())
+
+(({bar()})) が呼ばれるかは (({obj})) が (({nil})) かどうかによる
+
+= safe navigation operator (5)
+
+    obj&.attr += 1
+
+属性の代入形式も使える
+
+= safe navigation operator (6)
+
+    obj&.foo.bar
+
+(({obj})) が (({nil})) でも (({bar})) が呼ばれる
+
+((<#11816|URL:https://bugs.ruby-lang.org/issues/11816>)) に議論あり
+
+= safe navigation operator (7)
+
+    obj&.foo&.bar
+
+(({obj && (foo = obj.foo) && foo.bar})) に相当

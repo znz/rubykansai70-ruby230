@@ -102,6 +102,21 @@ shebang や coding マジックコメントがあれば、その後
 
 ((%ruby --debug=frozen-string-literal foo.rb%)) で実行すると文字列の生成場所がわかる (((%ruby -d foo.rb%)) でも同様)
 
+= (({String#+@})), (({String#-@})) (1)
+
+  * (({+'foo'})) は変更可能な String を返す
+  * (({-'foo'})) は freeze された String を返す
+    * 水は 0 度以下で凍るから
+
+= (({String#+@})), (({String#-@})) (2)
+演算子の優先順位に注意が必要
+
+    +"str" << "ing" # => "string"
+
+   +"str".concat("ing") # ~> RuntimeError
+
+  (+"str").concat("ing") # => "string"
+
 = safe navigation operator (1)
 
   * セーフナビゲーション演算子
@@ -111,6 +126,8 @@ shebang や coding マジックコメントがあれば、その後
 = safe navigation operator (2)
 
   * C#, Groovy, Swift などの (({?.})) に似た機能
+  * (({?.})) は採用できなかったので (({&.}))
+  * 開発版の途中までは (({.?})) だった
   * Active Support の (({try!})) に相当
 
 = safe navigation operator (3)

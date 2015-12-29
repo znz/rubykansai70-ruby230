@@ -145,6 +145,15 @@ shebang や coding マジックコメントがあれば、その後
   * 開発版の途中までは (({.?})) だった
   * Active Support の (({try!})) に相当
 
+= Active Support
+
+((<r52232|URL:http://svn.ruby-lang.org/cgi-bin/viewvc.cgi?revision=52232&view=revision>)) で修正されているように ActiveSupport ではなく Active Support が正式名称
+
+  Railsのコンポーネント名は語の間にスペースを1つ置く
+  表記を正式なものとする (例: "Active Support")。
+
+http://railsguides.jp/api_documentation_guidelines.html#%E8%AA%9E%E8%AA%BF
+
 = safe navigation operator (3)
 
     obj&.foo
@@ -180,3 +189,41 @@ shebang や coding マジックコメントがあれば、その後
     obj&.foo&.bar
 
 (({obj && (foo = obj.foo) && foo.bar})) に相当
+
+= did_you_mean gem (1)
+
+  * did_you_mean gem がバンドルされた
+  * NameError と NoMethodError の発生時に修正候補表示
+
+= did_you_mean gem (2)
+
+    $ ruby -e '"Yuki".starts_with?("Y")'
+    -e:1:in `<main>': undefined method `starts_with?'
+    for "Yuki":String (NoMethodError)
+    Did you mean?  start_with?
+
+= did_you_mean gem (3)
+
+内部的な話
+
+  * ((<Feature #11777|URL:https://bugs.ruby-lang.org/issues/11777>)) で (({NameError#local_variables})) が追加されて (({TracePoint})) を使わなくなった
+
+= indented here document (1)
+
+(({<<-})) の代わりに (({<<~}))
+
+    expected_result = <<~SQUIGGLY_HEREDOC
+      This would contain specially formatted text.
+
+      That might span many lines
+    SQUIGGLY_HEREDOC
+
+= indented here document (2)
+
+一番浅いインデントが削られる
+
+    p <<~END # => "  foo\nbar\n baz\n"
+       foo
+     bar
+      baz
+      END

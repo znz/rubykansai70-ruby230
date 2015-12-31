@@ -190,6 +190,23 @@ http://railsguides.jp/api_documentation_guidelines.html#%E8%AA%9E%E8%AA%BF
 
 (({obj && (foo = obj.foo) && foo.bar})) に相当
 
+= dig (1)
+
+    params[:order] && params[:order][:shipping_info] &&
+      params[:order][:shipping_info][:country]
+    # or
+    params[:order][:shipping_info][:country] rescue nil
+    # or
+    params.fetch(:order, {}).fetch(:shipping_info, {}).
+      fetch(:country, nil)
+
+  params.dig(:order, :shipping_info, :country)
+
+= dig (2)
+
+  * JSON をパースした結果など
+  * (({Array#dig})), (({Hash#dig})), (({Struct#dig})), (({OpenStruct#dig}))
+
 = did_you_mean gem (1)
 
   * did_you_mean gem がバンドルされた

@@ -38,6 +38,12 @@
   * 2015-12-25 リリース
   * 2.3 系列最初のリリース
 
+= 新機能を知るには?
+
+  * www.ruby-lang.org のリリースアナウンス
+  * 配布物の (({NEWS})) ファイル
+  * それらを元に紹介を書いているブログ記事
+
 = Frozen String Literal プラグマ (1)
 
   * Ruby 2.1 から (({"str".freeze})) が最適化
@@ -204,7 +210,7 @@ http://railsguides.jp/api_documentation_guidelines.html#%E8%AA%9E%E8%AA%BF
 
 = dig (2)
 
-  * JSON をパースした結果など
+  * JSON をパースした結果など用
   * (({Array#dig})), (({Hash#dig})), (({Struct#dig})), (({OpenStruct#dig}))
 
 = did_you_mean gem (1)

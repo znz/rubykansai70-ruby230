@@ -227,9 +227,62 @@ http://railsguides.jp/api_documentation_guidelines.html#%E8%AA%9E%E8%AA%BF
 
 = did_you_mean gem (3)
 
+無効にするには
+
+    $ ruby --disable=did_you_mean -e '"Yuki".starts_with?("Y")'
+    -e:1:in `<main>': undefined method `starts_with?'
+    for "Yuki":String (NoMethodError)
+
+  $ ruby --disable-did_you_mean -e '"Yuki".starts_with?("Y")'
+  -e:1:in `<main>': undefined method `starts_with?'
+  for "Yuki":String (NoMethodError)
+
+= did_you_mean gem (4)
+
 内部的な話
 
   * ((<Feature #11777|URL:https://bugs.ruby-lang.org/issues/11777>)) で (({NameError#local_variables})) が追加されて (({TracePoint})) を使わなくなった
+
+= RubyVM::InstructionSequence (1)
+
+  * experimental feature
+  * RubyVM::InstructionSequence#to_binary と .load_from_binary
+  * コンパイル済みバイナリを読み書き
+
+= RubyVM::InstructionSequence (2)
+
+  * 使用例として yomikomu gem
+  * https://github.com/ko1/yomikomu
+  * 詳細は ((<(('http://atdot.net/~ko1/diary/201512.html#d13'))|URL:http://atdot.net/~ko1/diary/201512.html#d13>))
+
+= さまざまなパフォーマンス改善 (1)
+
+https://www.ruby-lang.org/ja/news/2015/12/25/ruby-2-3-0-released/ より
+
+  * method entry データ構造の再検討
+  * 新しい table data 構造
+  * (({Proc#call})) 最適化
+
+= さまざまなパフォーマンス改善 (2)
+
+  * オブジェクトアロケーションとメソッド呼び出しのコードにおけるマシンコードレベルでの最適化
+  * よりスマートな instance variable データ構造
+
+= さまざまなパフォーマンス改善 (3)
+
+  * (({*_nonblock})) における exception: false キーワード引数のサポート
+
+= (({*_nonblock})) に (({exception: false})) キーワード引数
+
+  * (({IO::WaitReadable}))/(({IO::WaitWritable}))
+を発生する代わりに
+  * (({:wait_readable}))/(({:wait_writable}))
+を返す
+
+= NEWS
+
+  * ここまでが www.ruby-lang.org で取り上げられていた新機能 (とその関連の話)
+  * ここからは NEWS からその他の新機能を抜粋
 
 = indented here document (1)
 

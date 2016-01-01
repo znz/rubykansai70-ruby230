@@ -518,3 +518,17 @@ frozen-string-literal を考慮すると
 
   * (({$SAFE=2})) と (({$SAFE=3})) が obsolete になった
   * (({$SAFE})) を 2 以上に設定しようとすると (({ArgumentError}))
+
+= (({CGI.escapeHTML})) 高速化
+
+  * (({CGI.escapeHTML})) が C 拡張で高速化された
+  * https://github.com/ruby/ruby/pull/1164
+  * 最大約7倍
+  * ワーストケースでも約3倍
+
+= まとめ
+
+  * いろんな新機能が追加された
+  * いろいろと高速化された
+  * 紹介しきれなかったものは NEWS 参照
+  * ((<(('https://github.com/ruby/ruby/blob/v2_3_0/NEWS'))|URL:https://github.com/ruby/ruby/blob/v2_3_0/NEWS>))

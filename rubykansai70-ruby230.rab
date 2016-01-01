@@ -239,8 +239,9 @@ http://railsguides.jp/api_documentation_guidelines.html#%E8%AA%9E%E8%AA%BF
 
 = did_you_mean gem (4)
 
-内部的な話
+内部的にサポートが増えて速度的にもほぼ問題なくなっている
 
+  * ((<Feature #10881|URL:https://bugs.ruby-lang.org/issues/10881>)) で (({NoMethodError#receiever})) が追加された
   * ((<Feature #11777|URL:https://bugs.ruby-lang.org/issues/11777>)) で (({NameError#local_variables})) が追加されて (({TracePoint})) を使わなくなった
 
 = RubyVM::InstructionSequence (1)
@@ -303,3 +304,217 @@ https://www.ruby-lang.org/ja/news/2015/12/25/ruby-2-3-0-released/ より
      bar
       baz
       END
+
+= indented here document (3)
+
+2.3.0 では (({''})) の場合にバグあり
+
+    p <<~'END' # => "foo\nbar\nbaz\n"
+       foo
+     bar
+      baz
+      END
+
+= (({Array#bsearch_index}))
+
+(({Array#bsearch})) (要素を返す) のインデックスを返すバージョン
+
+= (({Comparable#==})) no longer rescues exceptions
+
+  $ cat /tmp/a.rb
+  class C;
+    include Comparable
+    def <=>(o)
+      raise 'stop!'
+    end
+  end
+  p C.new == C.new
+  $ ruby -v -W0 /tmp/a.rb
+  ruby 2.2.4p230 (2015-12-16 revision 53155) [x86_64-darwin14]
+  false
+  % ruby -v -W0 /tmp/a.rb
+  ruby 2.3.0p0 (2015-12-25 revision 53290) [x86_64-darwin14]
+  /tmp/a.rb:4:in `<=>': stop! (RuntimeError)
+          from /tmp/a.rb:7:in `=='
+          from /tmp/a.rb:7:in `<main>'
+
+= new Encoding::IBM037 (alias ebcdic-cp-us; dummy)
+
+  * EBCDIC は「主にIBM系のメインフレームやオフィスコンピュータなどで使用されている」(Wikipedia より)
+  * ASCII とは非互換なので dummy
+
+= (({grep_v})) (1)
+
+  * (({Enumerable#grep_v})), (({Enumerator::Lazy#grep_v}))
+  * in((*v*))erse version of (({#grep}))
+
+= (({grep_v})) (2)
+
+  %w(aaa bbb ccc).grep(/b/) #=> ["bbb"]
+  %w(aaa bbb ccc).grep_v(/b/) #=> ["aaa", "ccc"]
+
+= (({Enumerable#chunk_while})) (1)
+
+  * (({Enumerable#slice_when})) の仲間
+
+= (({Enumerable#chunk_while})) (2)
+
+  # 1ずつ増加する部分配列ごとに分ける。
+  [1,2,4,9,10,11,12,15,16,19,20,21]
+  .chunk_while{|i, j| i + 1 == j}.to_a
+  # => [[1, 2], [4], [9, 10, 11, 12], [15, 16], [19, 20, 21]]
+
+  # ソート済の配列を近い値(差が6以内)の部分配列ごとに分ける。
+  [3, 11, 14, 25, 28, 29, 29, 41, 55, 57]
+  .chunk_while{|i, j| j - i <= 6}.to_a
+  # => [[3], [11, 14], [25, 28, 29, 29], [41], [55, 57]]
+
+  # 増加のみの部分配列ごとに分ける。
+  [0, 9, 2, 2, 3, 2, 7, 5, 9, 5]
+  .chunk_while{|i, j| i <= j}.to_a
+  # => [[0, 9], [2, 2, 3], [2, 7], [5, 9], [5]]
+
+  # 隣り合う偶数同士、奇数同士の部分配列ごとに分ける。
+  [7, 5, 9, 2, 0, 7, 9, 4, 2, 0]
+  .chunk_while{|i, j| i.even? == j.even?}.to_a
+  # => [[7, 5, 9], [2, 0], [7, 9], [4, 2, 0]]
+
+= (({Hash#fetch_values}))
+
+キーが存在しない時の挙動が (({Hash#fetch})) と同様の (({Hash#values_at}))
+
+  h = { "cat" => "feline", "dog" => "canine", "cow" => "bovine" }
+
+  h.fetch_values("cow", "cat")                   #=> ["bovine", "feline"]
+  h.fetch_values("cow", "bird")                  # raises KeyError
+  h.fetch_values("cow", "bird") { |k| k.upcase } #=> ["bovine", "BIRD"]
+
+= (({Hash#<=})), (({Hash#<})), (({Hash#>=})), (({Hash#>})) (1)
+
+包含関係を調べられる
+
+    h1 = {a:1, b:2}
+    h2 = {a:1, b:2, c:3}
+    p h1 <= h2 # => true
+    p h2 <= h1 # => false
+
+= (({Hash#<=})), (({Hash#<})), (({Hash#>=})), (({Hash#>})) (2)
+
+全順序ではないので (({Hash#<=>})) は定義されていない
+
+    h1 = {a:1}
+    h2 = {a:2}
+    p h1 <= h2 # => false
+    p h2 <= h1 # => false
+
+= (({Hash#to_proc}))
+
+(({Hash})) を (({map})) などでそのまま使えるようになる
+
+    h = {
+      1 => 10,
+      2 => 20,
+      3 => 30,
+    }
+
+    [1, 2, 3].map(&h) # => [10, 20, 30]
+
+= (({Module#deprecate_constant}))
+
+deprecated だが互換性のために残している定数を参照した時に警告を表示する機能
+
+    % cat foo.rb
+    module Foo
+      BAR = :bar
+      deprecate_constant :BAR
+    end
+    Foo::BAR
+    % ruby foo.rb
+    foo.rb:5: warning: constant Foo::BAR is deprecated
+
+= (({Numeric#positive?})), (({Numeric#negative?}))
+
+正の数か負の数かを調べるメソッド
+
+    bunch_of_numbers.select(&:positive?)
+
+= (({Queue#close}))
+
+close すると無限の nil を push したかのような動作をする
+
+# https://bugs.ruby-lang.org/issues/10600#note-13
+    # 複数スレッドを同時に開始する例
+    synq = Queue.new
+    10.times{
+      Thread.new{
+        synq.pop #=> nil from closed Queue.
+        # do something
+      }
+    }
+
+    # do something initialization
+    synq.close
+
+= (({Regexp}))/(({String}))
+
+  * Unicode のバージョンが 7.0.0 から 8.0.0 に上がった
+
+= (({String.new})) に (({encoding})) キーワード引数
+
+frozen-string-literal を考慮すると
+
+    str = "\xA4\xA2".dup.force_encoding('euc-jp')
+
+となるのが
+
+    str = String.new("\xA4\xA2", encoding: 'euc-jp')
+
+とかける
+
+= (({Thread#name})), (({Thread#name=}))
+
+  * (({Thread})) の名前の取得・設定を行うAPIが追加された
+  * デバッグなどで識別したい時に便利
+
+= (({inspect})) での例外抑制
+
+  * (({inspect})) で (({Encoding::CompatibilityError})) が発生する代わりに自動でエスケープされるようになった
+  * ((<Feature #11801 rb_inspect shouldn't raise error even if calling inspect returns non compatible strings|URL:https://bugs.ruby-lang.org/issues/11801>))
+
+= (({close})) 済み (({IO})) の (({IO#close})) の例外抑制
+
+    f.close if !f.closed?
+
+と書いていたのが
+
+    f.close
+
+だけでよくなった
+
+= (({Object#timeout})) が deprecated
+
+  * (({Object#timeout})) が呼ばれた時に deprecated だと警告が出るようになった
+
+= (({Net::FTP}))
+
+  * passive mode がデフォルトになった
+  * (({Net::FTP.default_passive=})) で設定可能
+
+= (({Net::HTTP}))
+
+  * (({Net::HTTP#open_timeout})) のデフォルトが (({nil})) から (({60})) (秒) に変わった
+
+= (({Net::Telnet}))
+
+  * net-telnet gem として外だしされた
+  * https://github.com/ruby/net-telnet
+  * bundled gem として配布には含まれる
+
+= rake
+
+  * rake も ruby のレポジトリに直接含まれるのはやめて bundled gem になった
+
+= (({$SAFE}))
+
+  * (({$SAFE=2})) と (({$SAFE=3})) が obsolete になった
+  * (({$SAFE})) を 2 以上に設定しようとすると (({ArgumentError}))

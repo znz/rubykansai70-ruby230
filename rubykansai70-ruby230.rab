@@ -106,7 +106,7 @@ shebang や coding マジックコメントがあれば、その後
     # ~> foo.rb:2:in `<main>': can't modify frozen String,
          created at foo.rb:2 (RuntimeError)
 
-((%ruby --debug=frozen-string-literal foo.rb%)) で実行すると文字列の生成場所がわかる (((%ruby -d foo.rb%)) でも同様)
+((%ruby --debug=frozen-string-literal foo.rb%)) で実行すると文字列の生成場所がわかる (((%ruby -d foo.rb%)) でも有効になる)
 
 = Frozen String Literal プラグマ (10)
 
